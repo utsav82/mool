@@ -11,14 +11,31 @@
     <div id="app">
       <header><a class="brand" href="/">mool<span>.</span></a><span class="privacy"><i></i> Local to your browser</span></header>
       <main>
-        <section class="intro"><p class="eyebrow">YOUR MONEY. YOUR DEVICE.</p><h1>Know what you own.</h1><p class="lede">Your CAS has the facts. Mool makes them easier to understand. Open a statement privately, right here in your browser.</p></section>
-        <section id="open-panel" class="card">
-          <div class="section-label">01 / OPEN YOUR STATEMENT</div>
-          <h2>Start with your CAS</h2><p class="muted">Use the PDF attached to your CDSL email. Password-protected statements are supported.</p>
-          <label class="file-zone" for="pdf"><span class="file-symbol">↗</span><strong>Choose a statement PDF</strong><span>Processed on this device · up to 30 MB</span><input id="pdf" type="file" accept="application/pdf,.pdf" /></label>
-          <p id="status" role="status" aria-live="polite">Your statement is never sent to a server.</p>
-          <button id="cancel" type="button" class="secondary" hidden>Cancel / clear statement</button>
-          <form id="password-form" hidden><label for="password">Statement password</label><div class="password-row"><input id="password" type="password" autocomplete="off" spellcheck="false" placeholder="Use the instructions in your CDSL email" /><button type="submit">Unlock PDF</button></div><p class="muted">Used only to unlock this PDF in memory.</p></form>
+        <div class="home-hero">
+          <section class="intro" aria-labelledby="home-title">
+            <p class="eyebrow">A CLEARER VIEW OF YOUR CAS</p>
+            <h1 id="home-title">Know what<br><em>you own.</em></h1>
+            <p class="lede">Your statement has the details. Mool puts the holdings, totals and context together so you can actually use them.</p>
+            <p class="hero-footnote"><span aria-hidden="true"></span> Private by design. No account needed.</p>
+          </section>
+          <section id="open-panel" class="card" aria-labelledby="open-title">
+            <div class="section-label">CDSL CONSOLIDATED STATEMENT <span>LOCAL ONLY</span></div>
+            <h2 id="open-title">Open your portfolio</h2>
+            <p class="muted">Use the consolidated statement PDF from your CDSL email. It opens here, on this device.</p>
+            <label class="file-zone" for="pdf"><span class="file-symbol" aria-hidden="true">&nearr;</span><strong>Choose a statement PDF</strong><span class="file-hint">PDF only &middot; up to 30 MB</span><input id="pdf" type="file" accept="application/pdf,.pdf" /></label>
+            <p id="status" role="status" aria-live="polite">Your statement is never sent to a server.</p>
+            <button id="cancel" type="button" class="secondary" hidden>Cancel / clear statement</button>
+            <form id="password-form" hidden><label for="password">Statement password</label><div class="password-row"><input id="password" type="password" autocomplete="off" spellcheck="false" placeholder="Use the instructions in your CDSL email" /><button type="submit">Unlock PDF</button></div><p class="muted">Used only to unlock this PDF in memory.</p></form>
+            <p class="upload-footnote">Password-protected PDFs work too.</p>
+          </section>
+        </div>
+        <section class="home-guide" aria-labelledby="home-guide-title">
+          <div class="home-guide-heading"><p class="eyebrow">BEYOND THE TOTAL</p><h2 id="home-guide-title">Your numbers, with the details.</h2></div>
+          <div class="home-guide-grid">
+            <div><span>01 / HOLDINGS</span><h3>Everything in one place</h3><p>Search holdings, compare weights and see where each position is held.</p></div>
+            <div><span>02 / CONTEXT</span><h3>See what the CAS supports</h3><p>Review reported MF gains and monthly values with clear coverage limits.</p></div>
+            <div><span>03 / SOURCE</span><h3>Trace the numbers back</h3><p>Check reconciliation results and open the statement page behind a position.</p></div>
+          </div>
         </section>
         <section id="results" hidden>
           <div class="workspace-shell">
