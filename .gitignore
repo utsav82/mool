@@ -1,0 +1,5 @@
+node_modules/
+dist/
+public/pdf-assets/
+*.pdf
+.env*
