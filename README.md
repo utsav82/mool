@@ -1,8 +1,8 @@
 <img src="assets/icon.svg" width="64" height="64" alt="">
 
-# CAS overview
+# Mool
 
-Private, local-first CDSL CAS portfolio dashboard. Open a password-protected PDF to see consolidated investments, statement values, broad exposure, reported MF gains and concentration. No statement uploads, accounts, analytics or persistent financial-data storage.
+Mool helps you understand what you own. Its first version is a private, browser-based dashboard for CDSL CAS statements. Open a password-protected PDF to see consolidated investments, statement values, broad exposure, reported MF gains and concentration. No statement uploads, accounts, analytics or persistent financial-data storage.
 
 ## Run locally
 
