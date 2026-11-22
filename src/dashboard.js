@@ -114,30 +114,40 @@ function positionDetails(holding, showPage) {
 }
 
 function holdingsTable(portfolio, showPage) {
-  const root = card('Everything you own', 'One row per ISIN, combining quantities and statement values across locations. Expand a row to see its sources.');
+  const root = card('Holdings', 'One row per ISIN. Values and quantities are combined across all statement locations.');
+  root.classList.add('holdings-card');
   const controls = el('div', '', 'holding-controls');
-  const searchLabel = el('label', 'Find an investment');
+  const searchLabel = el('label', 'Search holdings');
   const search = el('input'); search.type = 'search'; search.placeholder = 'Name or ISIN'; searchLabel.append(search);
   const typeLabel = el('label', 'Investment type'); const type = el('select');
   for (const name of ['All types', ...new Set(portfolio.consolidated.map(row => row.type))]) { const option = el('option', name); option.value = name; type.append(option); }
   typeLabel.append(type);
+  const exposureLabel = el('label', 'Exposure'); const exposure = el('select');
+  for (const name of ['All exposures', ...new Set(portfolio.consolidated.map(row => row.exposure))]) { const option = el('option', name); option.value = name; exposure.append(option); }
+  exposureLabel.append(exposure);
   const orderLabel = el('label', 'Sort'); const order = el('select');
-  for (const [value, name] of [['value', 'Largest value first'], ['name', 'Name A–Z']]) { const option = el('option', name); option.value = value; order.append(option); }
-  orderLabel.append(order); controls.append(searchLabel, typeLabel, orderLabel);
+  for (const [value, name] of [['value', 'Largest value first'], ['name', 'Name A–Z'], ['locations', 'Most locations first']]) { const option = el('option', name); option.value = value; order.append(option); }
+  orderLabel.append(order); controls.append(searchLabel, typeLabel, exposureLabel, orderLabel);
   const content = el('div'); const count = el('p', '', 'muted'); count.setAttribute('aria-live', 'polite');
   function render() {
     const query = search.value.trim().toLowerCase();
-    const rows = portfolio.consolidated.filter(row => `${row.name} ${row.isin}`.toLowerCase().includes(query) && (type.value === 'All types' || row.type === type.value));
+    const rows = portfolio.consolidated.filter(row => `${row.name} ${row.isin}`.toLowerCase().includes(query) && (type.value === 'All types' || row.type === type.value) && (exposure.value === 'All exposures' || row.exposure === exposure.value));
     if (order.value === 'name') rows.sort((a, b) => a.name.localeCompare(b.name));
+    if (order.value === 'locations') rows.sort((a, b) => new Set(b.positions.map(position => position.location)).size - new Set(a.positions.map(position => position.location)).size || b.value - a.value);
     count.textContent = `${rows.length} of ${portfolio.consolidated.length} investments · weights use extracted holdings value`;
-    content.replaceChildren(table(['Investment', 'Type / exposure', 'Total units', 'Statement value', 'Weight'], rows.map(row => {
+    content.replaceChildren(table(['Investment', 'Type / exposure', 'Units', 'Statement value', 'Weight', 'Locations'], rows.map(row => {
       const identity = el('div'); identity.append(el('strong', row.name), el('small', row.isin, 'isin'), positionDetails(row, showPage));
       const category = el('div'); category.append(el('span', row.type, 'badge'), el('small', `${row.exposure}${row.inferred ? ' · inferred' : ''}`, 'isin'));
-      return [identity, category, qty(row.units), money(row.value), percent(portfolio.total > 0 ? row.value / portfolio.total * 100 : 0)];
+      const weight = portfolio.total > 0 ? row.value / portfolio.total * 100 : 0;
+      const weightNode = el('div', '', 'weight-cell');
+      const weightBar = el('span', '', 'weight-bar'); weightBar.style.width = `${Math.min(100, Math.max(0, weight))}%`;
+      weightNode.append(el('strong', percent(weight)), weightBar);
+      const locations = new Set(row.positions.map(position => position.location)).size;
+      return [identity, category, qty(row.units), money(row.value), weightNode, `${locations} ${locations === 1 ? 'location' : 'locations'}`];
     })));
     if (!rows.length) content.append(el('p', 'No matching investments. Try another search or type.'));
   }
-  search.addEventListener('input', render); type.addEventListener('change', render); order.addEventListener('change', render); render();
+  search.addEventListener('input', render); type.addEventListener('change', render); exposure.addEventListener('change', render); order.addEventListener('change', render); render();
   root.append(controls, count, content);
   return root;
 }
@@ -174,7 +184,9 @@ export function renderDashboard(root, portfolio, showPage) {
   const custody = card('Where it is held', 'Custody locations are different from asset classes. Values below come from extracted positions.');
   custody.append(bars(allocation(p.holdings, 'source').map(row => ({ ...row, label: labels[row.label] })), p.total));
   grid.append(exposure, custody);
-  overview.append(grid, holdingsTable(p, showPage));
+  const overviewLayout = el('div', '', 'overview-layout');
+  overviewLayout.append(holdingsTable(p, showPage), grid);
+  overview.append(overviewLayout);
 
   const performanceInfo = el('div', '', 'notice');
   performanceInfo.textContent = 'Performance coverage is partial. Invested amounts and gains below cover MF folios only, excluding demat funds, shares and bonds. XIRR, realised profit, income and whole-portfolio returns need additional history.';
