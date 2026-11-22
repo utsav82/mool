@@ -30,6 +30,8 @@ function reset() {
   $('password-form').hidden = true;
   $('results').hidden = true;
   $('dashboard').replaceChildren();
+  $('workspace-nav').replaceChildren();
+  document.body.classList.remove('workspace-open');
   $('extraction').open = false;
   $('open-panel').hidden = false;
   document.querySelector('.intro').hidden = false;
@@ -114,6 +116,8 @@ $('pdf').addEventListener('change', async event => {
       const source = $(`source-page-${number}`);
       if (source) { source.tabIndex = -1; source.focus({ preventScroll: true }); source.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     });
+    $('workspace-nav').replaceChildren($('dashboard').querySelector('.dashboard-nav'));
+    document.body.classList.add('workspace-open');
     $('results').hidden = false;
     $('open-panel').hidden = true;
     document.querySelector('.intro').hidden = true;
@@ -145,3 +149,9 @@ function clearStatement() {
 }
 $('clear').addEventListener('click', clearStatement);
 $('cancel').addEventListener('click', clearStatement);
+
+$('source-link').addEventListener('click', () => {
+  $('extraction').open = true;
+  $('extraction').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('extraction').querySelector('summary').focus({ preventScroll: true });
+});
